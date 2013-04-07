@@ -33,13 +33,11 @@ def name_beers(beer):
     '''
     soup = get_page(beer)
     results = []
-    html_beers = soup.find_all('a')
+    html_beers = soup.select('a[href^="/beer"]')
     for item in html_beers:
-        #if item.a.startswith('<a href="/beer'):
-        print item
-        print
-    for brew in soup.find_all('<a href="/beer/'):
-        print brew
+        if item.string:
+            results.append(item.string)
+    return results
 
 if __name__ == '__main__':
     BreweryDb.configure("013c7157366ad35b8e585209c7089802", "http://api.brewerydb.com/v2")
@@ -50,7 +48,7 @@ if __name__ == '__main__':
         while len(beer_info) < 3 and value != 1:
             if value != 1:
                 results = name_beers(beer)
-                beer = raw_input("Did you mean any of the following: %s" \
+                beer = raw_input("Did you mean any of the following: %s " \
                     %(results))
                 beer_info = BreweryDb.beers({"name" : beer})
                 value = parse_search(beer)
@@ -58,6 +56,8 @@ if __name__ == '__main__':
                 beer = raw_input("We couldn't find this beer. Please try again: ")
                 beer_info = BreweryDb.beers({"name" : beer})
                 value = parse_search(beer)
-        label = beer_info['data'][0]['labels']['medium']
+        print beer_info
+        if beer_info['data'][0]['labels']['medium']:
+            label = beer_info['data'][0]['labels']['medium']
         beer_id = beer_info['data'][0]['id']
-        webbrowser.open("http://www.brewerydb.com/beer/%s" %(beer))
+        webbrowser.open("http://www.brewerydb.com/beer/%s" %(beer_id))
