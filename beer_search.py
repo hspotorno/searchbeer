@@ -39,21 +39,32 @@ def name_beers(beer):
             results.append(item.string)
     return results
 
+def test_valid_input(beer):
+    '''Str -> Str
+    Tests if the beer input exists in the database.
+    '''
+
+    while True:
+        try:
+            value = page_and_search(beer)
+        except IndexError:
+            beer = raw_input("We couldn't find this beer. Please try again: ")
+        else:
+            return beer
+
 if __name__ == '__main__':
     BreweryDb.configure("013c7157366ad35b8e585209c7089802", "http://api.brewerydb.com/v2")
     while True:
         beer = raw_input("Enter the name of the beer you want to search: ")
+        test_valid_input(beer)
         value = page_and_search(beer)
         beer_info = BreweryDb.beers({"name" : beer})
-        while len(beer_info) < 3 and value != 1:
+        while value != 1:
             if value != 1:
                 results = name_beers(beer)
                 beer = raw_input("Did you mean any of the following: %s " \
                     %(results))
-                beer_info = BreweryDb.beers({"name" : beer})
-                value = parse_search(beer)
-            elif len(beer_info) < 3:
-                beer = raw_input("We couldn't find this beer. Please try again: ")
+                test_valid_input(beer)
                 beer_info = BreweryDb.beers({"name" : beer})
                 value = parse_search(beer)
         print beer_info
