@@ -2,6 +2,7 @@ from brewerydb import *
 from bs4 import BeautifulSoup
 import urllib2
 import webbrowser
+from unidecode import unidecode
 
 def get_page(beer):
     '''Str -> BeautifulSoup
@@ -52,6 +53,26 @@ def test_valid_input(beer):
         else:
             return beer
 
+def get_information(list_of_beers):
+    '''List -> List of tuples
+    Get the beer information.
+    '''
+    information = []
+    for item in list_of_beers:
+        beer = unidecode(item)
+        beer_info = BreweryDb.beers({"name" : beer})
+        try:
+            beer_info['data'][0]['labels']['medium']
+        except KeyError:
+            label = None
+        else:
+            label = beer_info['data'][0]['labels']['medium']
+        beer_id = beer_info['data'][0]['id']
+        information.append((beer, beer_id, label))
+    return information
+
+
+
 if __name__ == '__main__':
     BreweryDb.configure("013c7157366ad35b8e585209c7089802", "http://api.brewerydb.com/v2")
     while True:
@@ -69,10 +90,3 @@ if __name__ == '__main__':
                 test_valid_input(beer)
                 beer_info = BreweryDb.beers({"name" : beer})
                 value = page_and_search(beer)
-        try:
-            beer_info['data'][0]['labels']['medium']
-        except KeyError:
-            pass
-        else:
-            label = beer_info['data'][0]['labels']['medium']
-        beer_id = beer_info['data'][0]['id']
