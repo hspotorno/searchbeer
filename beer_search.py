@@ -41,34 +41,39 @@ def name_beers(beer):
 
 def test_valid_input(beer):
     '''Str -> Str
-    Tests if the beer input exists in the database.
+    Test if the beer input exists in the database.
     '''
 
     while True:
         try:
             value = page_and_search(beer)
         except IndexError:
-            beer = raw_input("We couldn't find this beer. Please try again: ")
+            beer = raw_input("We couldn't find this beer. Please try again: ").strip()
         else:
             return beer
 
 if __name__ == '__main__':
     BreweryDb.configure("013c7157366ad35b8e585209c7089802", "http://api.brewerydb.com/v2")
     while True:
-        beer = raw_input("Enter the name of the beer you want to search: ")
+        beer = raw_input("Enter the name of the beer you want to search: ").strip()
         test_valid_input(beer)
         value = page_and_search(beer)
         beer_info = BreweryDb.beers({"name" : beer})
-        while value != 1:
+        while len(beer_info) < 3:
             if value != 1:
                 results = name_beers(beer)
-                beer = raw_input("Did you mean any of the following: %s " \
-                    %(results))
+                print "Did you mean any of the following:"
+                for item in results:
+                    print item
+                beer = raw_input("Pick one: ").strip()
                 test_valid_input(beer)
                 beer_info = BreweryDb.beers({"name" : beer})
-                value = parse_search(beer)
-        print beer_info
-        if beer_info['data'][0]['labels']['medium']:
+                value = page_and_search(beer)
+        try:
+            beer_info['data'][0]['labels']['medium']
+        except KeyError:
+            pass
+        else:
             label = beer_info['data'][0]['labels']['medium']
         beer_id = beer_info['data'][0]['id']
         webbrowser.open("http://www.brewerydb.com/beer/%s" %(beer_id))
