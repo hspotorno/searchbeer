@@ -76,4 +76,3 @@ if __name__ == '__main__':
         else:
             label = beer_info['data'][0]['labels']['medium']
         beer_id = beer_info['data'][0]['id']
-        webbrowser.open("http://www.brewerydb.com/beer/%s" %(beer_id))
