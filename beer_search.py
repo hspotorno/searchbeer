@@ -64,13 +64,12 @@ def get_information(list_of_beers):
         try:
             beer_info['data'][0]['labels']['medium']
         except KeyError:
-            label = None
+            label = "http://i.imgur.com/MKOxq58s.png"
         else:
             label = beer_info['data'][0]['labels']['medium']
         beer_id = beer_info['data'][0]['id']
         information.append((beer, beer_id, label))
     return information
-
 
 
 if __name__ == '__main__':
