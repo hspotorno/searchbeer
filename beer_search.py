@@ -77,11 +77,11 @@ def from_id(id):
     '''
     beer = BreweryDb.beer(id)
     try:
-        beer['data'][0]['labels']['medium']
+        beer['data']['labels']['medium']
     except KeyError:
         label = "http://i.imgur.com/MKOxq58s.png"
     else:
-        label = beer['data'][0]['labels']['medium']
+        label = beer['data']['labels']['medium']
     beer_name = beer['data']['name']
     return (beer_name, label)
 
