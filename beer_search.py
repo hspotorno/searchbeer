@@ -71,6 +71,19 @@ def get_information(list_of_beers):
         information.append((beer, beer_id, label))
     return information
 
+def from_id(id):
+    '''Str -> Tuple
+    Get beer name and image from an ID.
+    '''
+    beer = BreweryDb.beer(id)
+    try:
+        beer['data'][0]['labels']['medium']
+    except KeyError:
+        label = "http://i.imgur.com/MKOxq58s.png"
+    else:
+        label = beer['data'][0]['labels']['medium']
+    beer_name = beer['data']['name']
+    return (beer_name, label)
 
 if __name__ == '__main__':
     BreweryDb.configure("013c7157366ad35b8e585209c7089802", "http://api.brewerydb.com/v2")
